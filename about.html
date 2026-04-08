@@ -3,23 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Us - OTT Movie Tracker</title>
-    <style>
-        body { font-family: 'Inter', sans-serif; background: #141414; color: #fff; padding: 5%; line-height: 1.6; }
-        h1, h2 { color: #E50914; }
-        a { color: #4da8da; text-decoration: none; }
-        a:hover { text-decoration: underline; }
-        .container { max-width: 800px; margin: auto; background: #181818; padding: 30px; border-radius: 8px; }
-    </style>
+    <title>About Us - OTT Release Pro</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <div class="container">
-        <h1>About Us</h1>
-        <p>Welcome to <strong>OTT Movie Tracker</strong>!</p>
-        <p>We are a dedicated platform designed to help movie lovers find their favorite movies and track exactly where they can be streamed. We aggregate trending movies, upcoming blockbusters, and hidden gems across all major OTT platforms including Netflix, Amazon Prime Video, Disney+ Hotstar, and more.</p>
-        <h2>Our Mission</h2>
-        <p>To end the endless scrolling and give you the ultimate streaming guide.</p>
-        <p><a href="index.html">&larr; Back to Home</a></p>
+
+    <header class="navbar">
+        <a href="index.html" class="logo">
+            <h2>OTT<span>Release Pro</span></h2>
+        </a>
+    </header>
+
+    <div class="page-container">
+        <h1 class="page-title">About Us</h1>
+        <div class="page-content">
+            <p>Welcome to <strong>OTT Release Pro</strong>, your ultimate destination for tracking the latest movie releases across all streaming platforms!</p>
+
+            <h2>Our Mission</h2>
+            <p>At OTT Release Pro, we are passionate about movies. With the rapid explosion of OTT platforms—Netflix, Amazon Prime Video, Disney+ Hotstar, and many others—it can be overwhelming to keep track of where and when a movie is releasing. Our mission is to simplify this process and bring all tracking data into one seamless, fast, and highly intuitive platform.</p>
+
+            <h2>What We Offer</h2>
+            <ul>
+                <li><strong>Real-time Updates:</strong> Get instant updates on trending and upcoming movie releases.</li>
+                <li><strong>Dynamic Search:</strong> Easily find your favorite movies with our dynamic TMDB-powered search engine.</li>
+                <li><strong>Filter Capabilities:</strong> Discover movies exactly tailored to your taste by filtering through Language, Genre, and Release Year.</li>
+                <li><strong>Trailer Integration:</strong> Watch YouTube trailers instantly via our seamless popup modals without ever leaving the tracking interface.</li>
+            </ul>
+
+            <h2>Powered by TMDB</h2>
+            <p>All of our movie metadata, including posters, ratings, and release dates, are proudly powered by the TMDB (The Movie Database) API, ensuring completely accurate and up-to-date information.</p>
+            
+            <p>Stay updated. Stream smarter.</p>
+        </div>
     </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h3>OTT Release Pro</h3>
+                <p>Track Latest OTT Movie Releases Instantly. Your ultimate companion to know what to watch and where to catch it.</p>
+            </div>
+            <div class="footer-col">
+                <h3>Legal</h3>
+                <div class="footer-links">
+                    <a href="privacy.html">Privacy Policy</a>
+                    <a href="terms.html">Terms of Service</a>
+                    <a href="disclaimer.html">Disclaimer</a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h3>Company</h3>
+                <div class="footer-links">
+                    <a href="about.html">About Us</a>
+                    <a href="contact.html">Contact Us</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2026 OTT Release Pro. All rights reserved. Data provided by TMDB.
+        </div>
+    </footer>
+
 </body>
 </html>
