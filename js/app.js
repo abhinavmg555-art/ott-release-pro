@@ -1,9 +1,10 @@
 document.addEventListener("DOMContentLoaded", () => {
     // DOM Elements
     const searchInput = document.getElementById("searchInput");
-    const searchBtn = document.getElementById("searchBtn");
     const filterBtns = document.querySelectorAll(".filter-btn");
     const languageFilter = document.getElementById("languageFilter");
+    const genreFilter = document.getElementById("genreFilter");
+    const yearFilter = document.getElementById("yearFilter");
     
     // Grids
     const trendingGrid = document.getElementById("trendingGrid");
@@ -32,28 +33,25 @@ document.addEventListener("DOMContentLoaded", () => {
         try { await loadSections(); } catch (e) {}
     }
 
-    // --- API Calls ---
+    // --- Dynamic API Calls ---
     async function loadSections(searchQuery = null) {
         let trendingRes, latestRes;
         
+        // Grab values from our Dropdowns!
         const params = {
-            watch_region: "IN",
-            with_original_language: languageFilter.value // Use the dropdown chosen language!
+            watch_region: "IN"
         };
         
+        if (languageFilter.value !== "") params.with_original_language = languageFilter.value;
+        if (genreFilter.value !== "") params.with_genres = genreFilter.value;
+        if (yearFilter.value !== "") params.primary_release_year = yearFilter.value;
+        
+        // Grab OTT Platform
         if (currentProvider !== "all") { params.with_watch_providers = currentProvider; }
 
         if (searchQuery) {
             // Live Search
             trendingRes = await searchMovies(searchQuery, params);
-            // Search API doesn't fully respect language filters perfectly, so we manually filter results!
-            if(trendingRes.results) {
-                const allowedLangs = languageFilter.value.split('|');
-                if (languageFilter.value !== "ml|ta|te|hi|kn") {
-                    trendingRes.results = trendingRes.results.filter(m => allowedLangs.includes(m.original_language));
-                }
-            }
-            
             document.querySelector("#trendingGrid").previousElementSibling.innerHTML = `Search Results: ${searchQuery}`;
             latestSection.style.display = "none";
         } else {
@@ -77,41 +75,39 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // --- EVENTS ---
+    // --- Dropdown EVENTS ---
     
-    // 1. Language Dropdown Change
-    languageFilter.addEventListener('change', () => {
+    // When ANY dropdown changes, reload everything dynamically!
+    function handleFiltersChanged() {
         const query = searchInput.value.trim();
         showSkeletons(trendingGrid);
         showSkeletons(latestGrid);
         loadSections(query ? query : null);
-    });
+    }
 
-    // 2. OTT Platform Filters
+    languageFilter.addEventListener('change', handleFiltersChanged);
+    genreFilter.addEventListener('change', handleFiltersChanged);
+    yearFilter.addEventListener('change', handleFiltersChanged);
+
+    // OTT Platform Filters
     filterBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             filterBtns.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             currentProvider = btn.dataset.provider;
-            const query = searchInput.value.trim();
-            showSkeletons(trendingGrid);
-            showSkeletons(latestGrid);
-            loadSections(query ? query : null);
+            handleFiltersChanged();
         });
     });
 
-    // 3. Live Search As You Type (Debounced to protect API)
+    // Live Search As You Type
     searchInput.addEventListener('input', (e) => {
         clearTimeout(searchTimeout);
         searchTimeout = setTimeout(() => {
             const query = e.target.value.trim();
-            if(!query) {
-                init();
-                return;
-            }
+            if(!query) { init(); return; }
             showSkeletons(trendingGrid);
             loadSections(query);
-        }, 400); // Waits 0.4 seconds after you stop typing to search
+        }, 400); 
     });
 
     // --- HELPERS ---
