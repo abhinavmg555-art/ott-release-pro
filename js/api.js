@@ -39,17 +39,29 @@ async function getTrendingMovies(page = 1, params = {}) {
 }
 
 /**
- * Get upcoming movies
+ * Get Upcoming / Future releases
  */
 async function getUpcomingMovies(page = 1, params = {}) {
-    return await fetchTMDB("/movie/upcoming", { page, ...params, region: 'US' });
+    const today = new Date().toISOString().split('T')[0];
+    return await fetchTMDB("/discover/movie", { 
+        sort_by: "popularity.desc",
+        "primary_release_date.gte": today,
+        page, 
+        ...params 
+    });
 }
 
 /**
- * Get latest releases (Now Playing)
+ * Get latest releases (Now Playing style but fully filterable)
  */
 async function getLatestMovies(page = 1, params = {}) {
-    return await fetchTMDB("/movie/now_playing", { page, ...params, region: 'US' });
+    const today = new Date().toISOString().split('T')[0];
+    return await fetchTMDB("/discover/movie", { 
+        sort_by: "popularity.desc",
+        "primary_release_date.lte": today,
+        page, 
+        ...params 
+    });
 }
 
 /**
