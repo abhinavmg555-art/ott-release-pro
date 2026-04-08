@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     // DOM Elements
+    const searchForm = document.getElementById("searchForm");
     const searchInput = document.getElementById("searchInput");
     const searchBtn = document.getElementById("searchBtn");
     const filterBtns = document.querySelectorAll(".filter-btn");
@@ -178,18 +179,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Search
     let searchTimeout;
-    searchBtn.addEventListener('click', () => executeSearch());
+    
+    if (searchForm) {
+        searchForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            clearTimeout(searchTimeout);
+            executeSearch();
+            // Optional: Dismiss the mobile keyboard after pressing search
+            if (document.activeElement) document.activeElement.blur();
+        });
+    }
+
     searchInput.addEventListener('input', (e) => {
         clearTimeout(searchTimeout);
         searchTimeout = setTimeout(() => {
             executeSearch();
         }, 500); // 500ms debounce for real-time filtering
-    });
-    searchInput.addEventListener('keypress', (e) => {
-        if(e.key === 'Enter') {
-            clearTimeout(searchTimeout);
-            executeSearch();
-        }
     });
 
     function executeSearch() {
