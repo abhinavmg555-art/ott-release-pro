@@ -35,6 +35,19 @@ document.addEventListener("DOMContentLoaded", () => {
     const trailerContainer = document.getElementById("trailerContainer");
     const themeToggle = document.getElementById("themeToggle");
     const backToTop = document.getElementById("backToTop");
+    const filterToggleBtn = document.getElementById("filterToggleBtn");
+    const advancedFilters = document.getElementById("advancedFilters");
+
+    if (filterToggleBtn && advancedFilters) {
+        filterToggleBtn.addEventListener("click", () => {
+            if (advancedFilters.style.display === "none") {
+                advancedFilters.style.display = "flex";
+                advancedFilters.style.animation = "slideUpFade 0.3s ease";
+            } else {
+                advancedFilters.style.display = "none";
+            }
+        });
+    }
     
     // State
     let currentProvider = "all"; // all, 8, 119, 122, others
@@ -95,8 +108,14 @@ document.addEventListener("DOMContentLoaded", () => {
         
         // Handle Lang, Genre, Year
         if (langFilter && langFilter.value) {
-            params.with_original_language = langFilter.value;
+            if (langFilter.value !== "global") {
+                params.with_original_language = langFilter.value;
+            }
+        } else {
+            // Default home view -> Prefer Indian Movies
+            params.with_origin_country = "IN";
         }
+        
         if (genreFilter && genreFilter.value) {
             params.with_genres = genreFilter.value;
         }
@@ -109,12 +128,13 @@ document.addEventListener("DOMContentLoaded", () => {
             document.querySelector("#trendingGrid").previousElementSibling.innerHTML = `Search Results: ${searchQuery}`;
             document.querySelector("#latestGrid").parentElement.style.display = "none";
         } else {
-            document.querySelector("#trendingGrid").previousElementSibling.innerHTML = `Upcoming Releases`;
+            document.querySelector("#trendingGrid").previousElementSibling.innerHTML = `🔥 Trending & Latest Releases`;
             document.querySelector("#latestGrid").parentElement.style.display = "block";
+            document.querySelector("#latestGrid").previousElementSibling.innerHTML = `🚀 Upcoming Releases`;
             
             [trendingRes, latestRes] = await Promise.all([
                 getTrendingMovies(1, params),
-                getLatestMovies(1, params)
+                getUpcomingMovies(1, params)
             ]);
         }
         
@@ -157,9 +177,19 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Search
+    let searchTimeout;
     searchBtn.addEventListener('click', () => executeSearch());
+    searchInput.addEventListener('input', (e) => {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            executeSearch();
+        }, 500); // 500ms debounce for real-time filtering
+    });
     searchInput.addEventListener('keypress', (e) => {
-        if(e.key === 'Enter') executeSearch();
+        if(e.key === 'Enter') {
+            clearTimeout(searchTimeout);
+            executeSearch();
+        }
     });
 
     function executeSearch() {
@@ -189,7 +219,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function renderMovies(movies, container) {
         container.innerHTML = "";
         if (!movies || movies.length === 0) {
-            container.innerHTML = "<p style='color: var(--text-secondary); grid-column: 1/-1;'>No movies found.</p>";
+            container.innerHTML = "<div style='color: var(--text-secondary); grid-column: 1/-1; text-align: center; font-size: 18px; padding: 50px 0;'>No results found</div>";
             return;
         }
 
