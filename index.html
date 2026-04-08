@@ -7,57 +7,96 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
     <style>
-        .filter-dropdown { padding: 6px 12px; border-radius: 8px; background: var(--bg-surface); color: var(--text-primary); border: 1px solid var(--border); font-family: 'Poppins', sans-serif; }
+        .filter-dropdown { padding: 6px 12px; border-radius: 8px; background: #111; color: var(--text-primary); border: 1px solid #333; font-family: 'Poppins', sans-serif; cursor: pointer; }
+        .nav-links-right { display: flex; gap: 20px; margin-left: 20px; }
+        .nav-links-right a { color: var(--text-secondary); text-decoration: none; font-weight: 500; transition: color 0.3s; }
+        .nav-links-right a:hover { color: var(--accent); }
     </style>
 </head>
 <body>
 
     <!-- Header / Navbar -->
     <header class="navbar" style="flex-direction: column; gap: 15px;">
-        <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
+        <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
             <a href="index.html" class="logo">
-                <h2 style="letter-spacing: 1px;">OTT<span>Release Pro</span></h2>
+                <h2 style="letter-spacing: 1px; margin: 0;">OTT<span>Release Pro</span></h2>
             </a>
             
-            <div class="nav-controls-top" style="display: flex; gap: 10px; align-items: center;">
+            <div class="nav-controls-top" style="display: flex; gap: 15px; align-items: center;">
                 <div class="search-wrapper">
                     <input type="text" id="searchInput" class="search-input" placeholder="Search movies...">
                     <button id="searchBtn" class="search-button">🔍</button>
                 </div>
+                
+                <!-- Added back your Nav Links -->
+                <div class="nav-links-right">
+                    <a href="index.html" style="color: var(--accent);">Home</a>
+                    <a href="#">Favorites</a>
+                </div>
+                
                 <button id="themeToggle" class="theme-btn">☀️</button>
             </div>
         </div>
 
-        <!-- The Advanced Dropdowns you requested -->
-        <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: center; justify-content: center; width: 100%;">
-            <label style="color: var(--text-secondary); font-size: 0.9rem;">Language</label>
+        <!-- The Advanced Dropdowns Exactly Like Your Screenshots -->
+        <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: center; justify-content: center; width: 100%; margin-top: 10px;">
+            <label style="color: var(--text-secondary); font-size: 0.95rem;">Language</label>
             <select id="languageFilter" class="filter-dropdown">
-                <option value="">Global Mix (All)</option>
-                <option value="ml">Malayalam Only</option>
-                <option value="ta">Tamil Only</option>
-                <option value="te">Telugu Only</option>
-                <option value="hi">Hindi Only</option>
-                <option value="en">English Only</option>
+                <option value="">Global Mix</option>
+                <option value="ml">Malayalam (മലയാളം)</option>
+                <option value="ta">Tamil (தமிழ்)</option>
+                <option value="te">Telugu (తెలుగు)</option>
+                <option value="hi">Hindi (हिंदी)</option>
+                <option value="en">English</option>
             </select>
 
-            <label style="color: var(--text-secondary); font-size: 0.9rem; margin-left: 10px;">Genre</label>
+            <label style="color: var(--text-secondary); font-size: 0.95rem; margin-left: 15px;">Genre</label>
             <select id="genreFilter" class="filter-dropdown">
                 <option value="">All Genres</option>
                 <option value="28">Action</option>
+                <option value="12">Adventure</option>
+                <option value="16">Animation</option>
                 <option value="35">Comedy</option>
+                <option value="80">Crime</option>
                 <option value="18">Drama</option>
+                <option value="14">Fantasy</option>
                 <option value="27">Horror</option>
+                <option value="9648">Mystery</option>
                 <option value="10749">Romance</option>
                 <option value="878">Sci-Fi</option>
+                <option value="53">Thriller</option>
             </select>
 
-            <label style="color: var(--text-secondary); font-size: 0.9rem; margin-left: 10px;">Release Year</label>
+            <label style="color: var(--text-secondary); font-size: 0.95rem; margin-left: 15px;">Release Year</label>
             <select id="yearFilter" class="filter-dropdown">
                 <option value="">All Years</option>
+                <option value="2028">2028</option>
+                <option value="2027">2027</option>
                 <option value="2026">2026</option>
                 <option value="2025">2025</option>
                 <option value="2024">2024</option>
                 <option value="2023">2023</option>
+                <option value="2022">2022</option>
+                <option value="2021">2021</option>
+                <option value="2020">2020</option>
+                <option value="2019">2019</option>
+                <option value="2018">2018</option>
+                <option value="2017">2017</option>
+                <option value="2016">2016</option>
+                <option value="2015">2015</option>
+                <option value="2014">2014</option>
+                <option value="2013">2013</option>
+                <option value="2012">2012</option>
+                <option value="2011">2011</option>
+                <option value="2010">2010</option>
+                <option value="2009">2009</option>
+                <option value="2008">2008</option>
+                <option value="2007">2007</option>
+                <option value="2006">2006</option>
+                <option value="2005">2005</option>
+                <option value="2004">2004</option>
+                <option value="2003">2003</option>
+                <option value="2002">2002</option>
             </select>
         </div>
     </header>
