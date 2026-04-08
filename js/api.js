@@ -35,7 +35,11 @@ async function fetchTMDB(endpoint, queryParams = {}) {
  * Get trending movies
  */
 async function getTrendingMovies(page = 1, params = {}) {
-    return await fetchTMDB("/trending/movie/week", { page, ...params });
+    return await fetchTMDB("/discover/movie", { 
+        sort_by: "popularity.desc",
+        page, 
+        ...params 
+    });
 }
 
 /**
