@@ -6,29 +6,59 @@
     <title>OTT Release Pro | Track Latest OTT Movie Releases Instantly</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .filter-dropdown { padding: 6px 12px; border-radius: 8px; background: var(--bg-surface); color: var(--text-primary); border: 1px solid var(--border); font-family: 'Poppins', sans-serif; }
+    </style>
 </head>
 <body>
 
     <!-- Header / Navbar -->
-    <header class="navbar">
-        <a href="index.html" class="logo">
-            <h2 style="letter-spacing: 1px;">OTT<span>Release Pro</span></h2>
-        </a>
-        <div class="nav-controls-top" style="display: flex; gap: 10px; align-items: center;">
-            <!-- Language Dropdown -->
-            <select id="languageFilter" style="padding: 10px; border-radius: 20px; background: var(--bg-surface); color: var(--text-primary); border: 1px solid var(--border); font-family: 'Poppins', sans-serif;">
-                <option value="ml|ta|te|hi|kn">All Indian</option>
+    <header class="navbar" style="flex-direction: column; gap: 15px;">
+        <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
+            <a href="index.html" class="logo">
+                <h2 style="letter-spacing: 1px;">OTT<span>Release Pro</span></h2>
+            </a>
+            
+            <div class="nav-controls-top" style="display: flex; gap: 10px; align-items: center;">
+                <div class="search-wrapper">
+                    <input type="text" id="searchInput" class="search-input" placeholder="Search movies...">
+                    <button id="searchBtn" class="search-button">🔍</button>
+                </div>
+                <button id="themeToggle" class="theme-btn">☀️</button>
+            </div>
+        </div>
+
+        <!-- The Advanced Dropdowns you requested -->
+        <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: center; justify-content: center; width: 100%;">
+            <label style="color: var(--text-secondary); font-size: 0.9rem;">Language</label>
+            <select id="languageFilter" class="filter-dropdown">
+                <option value="">Global Mix (All)</option>
                 <option value="ml">Malayalam Only</option>
                 <option value="ta">Tamil Only</option>
                 <option value="te">Telugu Only</option>
                 <option value="hi">Hindi Only</option>
+                <option value="en">English Only</option>
             </select>
-            
-            <div class="search-wrapper">
-                <input type="text" id="searchInput" class="search-input" placeholder="Search movies...">
-                <button id="searchBtn" class="search-button">🔍</button>
-            </div>
-            <button id="themeToggle" class="theme-btn">☀️</button>
+
+            <label style="color: var(--text-secondary); font-size: 0.9rem; margin-left: 10px;">Genre</label>
+            <select id="genreFilter" class="filter-dropdown">
+                <option value="">All Genres</option>
+                <option value="28">Action</option>
+                <option value="35">Comedy</option>
+                <option value="18">Drama</option>
+                <option value="27">Horror</option>
+                <option value="10749">Romance</option>
+                <option value="878">Sci-Fi</option>
+            </select>
+
+            <label style="color: var(--text-secondary); font-size: 0.9rem; margin-left: 10px;">Release Year</label>
+            <select id="yearFilter" class="filter-dropdown">
+                <option value="">All Years</option>
+                <option value="2026">2026</option>
+                <option value="2025">2025</option>
+                <option value="2024">2024</option>
+                <option value="2023">2023</option>
+            </select>
         </div>
     </header>
 
@@ -67,7 +97,6 @@
         </section>
     </main>
 
-    <!-- About Section -->
     <section class="container" style="text-align: center; padding: 20px 5%; border-top: 1px solid var(--border); margin-top: 40px;">
         <h3 style="margin-bottom: 10px;">About OTT Release Pro</h3>
         <p style="color: var(--text-secondary);">This website provides latest OTT release updates including Netflix, Prime Video, and more.</p>
