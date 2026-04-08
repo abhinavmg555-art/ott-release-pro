@@ -261,3 +261,29 @@ document.addEventListener("DOMContentLoaded", () => {
     // Start
     init();
 });
+// --- LIVE SEARCH (As you type) ---
+document.getElementById('searchInput').addEventListener('input', function(e) {
+    const query = e.target.value.toLowerCase();
+    const allCards = document.querySelectorAll('.movie-card');
+    const noResultsMsg = document.getElementById('noResultsMsg');
+    let found = false;
+
+    allCards.forEach(card => {
+        const titleElement = card.querySelector('.movie-title');
+        if (titleElement) {
+            const title = titleElement.textContent.toLowerCase();
+            if (title.includes(query)) {
+                card.style.display = 'flex';
+                found = true;
+            } else {
+                card.style.display = 'none';
+            }
+        }
+    });
+
+    if (!found && query.length > 0) {
+        if(noResultsMsg) noResultsMsg.style.display = 'block';
+    } else {
+        if(noResultsMsg) noResultsMsg.style.display = 'none';
+    }
+});
