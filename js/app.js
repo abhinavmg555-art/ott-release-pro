@@ -113,8 +113,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 params.with_original_language = langFilter.value;
             }
         } else {
-            // Default home view -> Prefer Indian Movies
-            params.with_origin_country = "IN";
+            // Default home view -> Strictly Force Indian Languages!
+            params.with_original_language = "ml|ta|te|hi|kn|bn";
         }
         
         if (genreFilter && genreFilter.value) {
@@ -194,7 +194,7 @@ document.addEventListener("DOMContentLoaded", () => {
         clearTimeout(searchTimeout);
         searchTimeout = setTimeout(() => {
             executeSearch();
-        }, 500); // 500ms debounce for real-time filtering
+        }, 250); // 250ms debounce for lightning-fast real-time filtering
     });
 
     function executeSearch() {
