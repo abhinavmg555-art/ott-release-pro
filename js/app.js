@@ -3,6 +3,20 @@ document.addEventListener("DOMContentLoaded", () => {
     const searchInput = document.getElementById("searchInput");
     const searchBtn = document.getElementById("searchBtn");
     const filterBtns = document.querySelectorAll(".filter-btn");
+    const langFilter = document.getElementById("langFilter");
+    const genreFilter = document.getElementById("genreFilter");
+    const yearFilter = document.getElementById("yearFilter");
+    
+    // Populate years
+    if (yearFilter) {
+        const currentYear = new Date().getFullYear();
+        for (let y = currentYear + 2; y >= 2000; y--) {
+            const option = document.createElement("option");
+            option.value = y;
+            option.textContent = y;
+            yearFilter.appendChild(option);
+        }
+    }
     
     // Grids
     const trendingGrid = document.getElementById("trendingGrid");
@@ -78,6 +92,17 @@ document.addEventListener("DOMContentLoaded", () => {
             // Exclude netflix(8), prime(119), hotstar(122)
             params.without_watch_providers = "8|119|122";
         }
+        
+        // Handle Lang, Genre, Year
+        if (langFilter && langFilter.value) {
+            params.with_original_language = langFilter.value;
+        }
+        if (genreFilter && genreFilter.value) {
+            params.with_genres = genreFilter.value;
+        }
+        if (yearFilter && yearFilter.value) {
+            params.primary_release_year = yearFilter.value;
+        }
 
         if (searchQuery) {
             trendingRes = await searchMovies(searchQuery, params);
@@ -119,6 +144,16 @@ document.addEventListener("DOMContentLoaded", () => {
             // Scroll to trending smoothly
             document.querySelector('.filters-container').scrollIntoView({ behavior: 'smooth' });
         });
+    });
+
+    [langFilter, genreFilter, yearFilter].forEach(select => {
+        if(select) {
+            select.addEventListener('change', () => {
+                showSkeletons(trendingGrid);
+                showSkeletons(latestGrid);
+                loadSections(searchInput.value.trim() || null);
+            });
+        }
     });
 
     // Search
