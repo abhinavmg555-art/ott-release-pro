@@ -4,13 +4,8 @@ const BASE_URL = "https://api.tmdb.org/3";
 const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500";
 const IMAGE_ORIGINAL_URL = "https://image.tmdb.org/t/p/original";
 
-/**
- * Fetch data from TMDB API
- */
 async function fetchTMDB(endpoint, queryParams = {}) {
-    if (!API_KEY) {
-        throw new Error("Missing TMDB API Key.");
-    }
+    if (!API_KEY) throw new Error("Missing TMDB API Key.");
     
     const url = new URL(`${BASE_URL}${endpoint}`);
     url.searchParams.append("api_key", API_KEY);
@@ -21,9 +16,7 @@ async function fetchTMDB(endpoint, queryParams = {}) {
 
     try {
         const response = await fetch(url);
-        if (!response.ok) {
-            throw new Error(`API Error: ${response.status}`);
-        }
+        if (!response.ok) throw new Error(`API Error: ${response.status}`);
         return await response.json();
     } catch (error) {
         console.error("Fetch TMDB Error:", error);
@@ -31,39 +24,25 @@ async function fetchTMDB(endpoint, queryParams = {}) {
     }
 }
 
-/**
- * Get trending movies
- */
 async function getTrendingMovies(page = 1, params = {}) {
-    return await fetchTMDB("/trending/movie/week", { page, ...params });
+    // Uses discover to prioritize Indian Regional Languages (Malayalam, Tamil, Telugu, Hindi)
+    return await fetchTMDB("/discover/movie", { 
+        page, 
+        sort_by: 'popularity.desc',
+        with_original_language: 'ml|ta|te|hi|kn', // Forces Indian movies!
+        region: 'IN',
+        ...params 
+    });
 }
 
-/**
- * Get upcoming movies
- */
-async function getUpcomingMovies(page = 1, params = {}) {
-    return await fetchTMDB("/movie/upcoming", { page, ...params, region: 'US' });
-}
-
-/**
- * Get latest releases (Now Playing)
- */
 async function getLatestMovies(page = 1, params = {}) {
-    return await fetchTMDB("/movie/now_playing", { page, ...params, region: 'US' });
+    return await fetchTMDB("/movie/now_playing", { page, region: 'IN', ...params });
 }
 
-/**
- * Search movies by query
- */
 async function searchMovies(query, params = {}) {
-    return await fetchTMDB("/search/movie", { query, page: 1, ...params });
+    return await fetchTMDB("/search/movie", { query, page: 1, region: 'IN', ...params });
 }
 
-/**
- * Get advanced details of a movie (including providers & videos)
- */
 async function getMovieDetails(movieId) {
     return await fetchTMDB(`/movie/${movieId}`, { append_to_response: "watch/providers,videos" });
 }
-
-
