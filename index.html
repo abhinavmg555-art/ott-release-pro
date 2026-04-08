@@ -39,6 +39,44 @@
             <button class="filter-btn hotstar-btn" data-provider="122">Hotstar</button>
             <button class="filter-btn others-btn" data-provider="others">Others</button>
         </div>
+        <div class="advanced-filters">
+            <div class="filter-group">
+                <label for="langFilter">Language</label>
+                <select id="langFilter" class="filter-select">
+                    <option value="">Global Mix</option>
+                    <option value="ml">Malayalam (മലാ)</option>
+                    <option value="ta">Tamil (தமிழ்)</option>
+                    <option value="te">Telugu (తెలు)</option>
+                    <option value="hi">Hindi (हिंदी)</option>
+                    <option value="en">English</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="genreFilter">Genre</label>
+                <select id="genreFilter" class="filter-select">
+                    <option value="">All Genres</option>
+                    <option value="28">Action</option>
+                    <option value="12">Adventure</option>
+                    <option value="16">Animation</option>
+                    <option value="35">Comedy</option>
+                    <option value="80">Crime</option>
+                    <option value="18">Drama</option>
+                    <option value="14">Fantasy</option>
+                    <option value="27">Horror</option>
+                    <option value="9648">Mystery</option>
+                    <option value="10749">Romance</option>
+                    <option value="878">Sci-Fi</option>
+                    <option value="53">Thriller</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="yearFilter">Release Year</label>
+                <select id="yearFilter" class="filter-select">
+                    <option value="">All Years</option>
+                    <!-- Populated dynamically via JS -->
+                </select>
+            </div>
+        </div>
     </div>
 
     <!-- Hero Section -->
