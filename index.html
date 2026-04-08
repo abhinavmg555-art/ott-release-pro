@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OTT Movie Tracker | Find Where to Watch Movies Online</title>
+    <title>OTT Release Pro | Track Latest OTT Movie Releases Instantly</title>
     <meta name="description" content="Discover the latest movies, upcoming releases, and find exactly which OTT platform to watch them on. Your ultimate movie tracking guide.">
     <meta name="keywords" content="movies, OTT, netflix, prime video, hotstar, where to watch, movie tracker, south indian movies">
     <meta name="robots" content="index, follow">
@@ -762,6 +762,21 @@ a {
     font-size: 12px;
 }
 
+.social-links {
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+.social-links a {
+    color: #888;
+    font-size: 20px;
+    transition: color 0.3s;
+}
+.social-links a:hover {
+    color: var(--accent);
+}
+
 .card-actions {
     display: flex;
     gap: 5px;
@@ -817,8 +832,8 @@ a {
     <!-- Header Navigation -->
     <header class="navbar">
         <div class="logo">
-            <h2>OTT<span>Release Tracker</span></h2>
-            <p style="font-size: 10px; color: var(--text-secondary); letter-spacing: 1px; text-transform: uppercase;">Where to Watch OTT content in India & Daily Updated Releases</p>
+            <h2>OTT<span>Release Pro</span></h2>
+            <p style="font-size: 10px; color: var(--text-secondary); letter-spacing: 1px; text-transform: uppercase;">Track Latest OTT Movie Releases Instantly</p>
         </div>
         <div class="search-container">
             <input type="text" id="searchInput" placeholder="Search for movies..." autocomplete="off">
@@ -980,9 +995,15 @@ a {
             <a href="about.html">About Us</a>
             <a href="privacy.html">Privacy Policy</a>
             <a href="terms.html">Terms & Conditions</a>
+            <a href="disclaimer.html">Disclaimer</a>
             <a href="contact.html">Contact</a>
         </div>
-        <p class="footer-copy">&copy; 2026 OTT Release Tracker. Where to Watch OTT content in India.</p>
+        <div class="social-links">
+            <a href="#"><i class="fab fa-facebook"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+        </div>
+        <p class="footer-copy" style="margin-top:20px;">&copy; 2026 OTT Release Pro. All Rights Reserved. info@ottreleasepro.example.com</p>
     </footer>
 
     <!-- Movie Details Modal -->
