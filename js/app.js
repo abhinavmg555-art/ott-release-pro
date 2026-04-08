@@ -2,92 +2,155 @@ document.addEventListener("DOMContentLoaded", () => {
     // DOM Elements
     const searchInput = document.getElementById("searchInput");
     const searchBtn = document.getElementById("searchBtn");
-    const tabBtns = document.querySelectorAll(".tab-btn");
-    const filterBtn = document.getElementById("filterBtn");
+    const filterBtns = document.querySelectorAll(".filter-btn");
     
     // Grids
     const trendingGrid = document.getElementById("trendingGrid");
-    const upcomingGrid = document.getElementById("upcomingGrid");
     const latestGrid = document.getElementById("latestGrid");
-    
-    // Sections
-    const tmTrending = document.getElementById("tmTrending");
-    const tmUpcoming = document.getElementById("tmUpcoming");
-    const tmLatest = document.getElementById("tmLatest");
     
     // Hero Elements
     const heroTitle = document.getElementById("heroTitle");
-    const heroRating = document.getElementById("heroRating");
-    const heroYear = document.getElementById("heroYear");
+    const heroMeta = document.getElementById("heroMeta");
     const heroDesc = document.getElementById("heroDesc");
     const heroSection = document.getElementById("heroSection");
     const heroTrailerBtn = document.getElementById("heroTrailerBtn");
     
-    // Modals
-    const filterModal = document.getElementById("filterModal");
-    const closeFilter = document.getElementById("closeFilter");
-    const applyFilterBtn = document.getElementById("applyFilterBtn");
-    
+    // Modals & UI
     const trailerModal = document.getElementById("trailerModal");
     const closeTrailer = document.getElementById("closeTrailer");
     const trailerContainer = document.getElementById("trailerContainer");
-    
-    // Filters
-    const langFilter = document.getElementById("langFilter");
-    const genreFilter = document.getElementById("genreFilter");
-    const yearFilter = document.getElementById("yearFilter");
+    const themeToggle = document.getElementById("themeToggle");
+    const backToTop = document.getElementById("backToTop");
     
     // State
-    let currentFilterState = {
-        language: '',
-        with_genres: '',
-        primary_release_year: ''
-    };
-    
-    let isFetching = false;
+    let currentProvider = "all"; // all, 8, 119, 122, others
     let heroMovieId = null;
+
+    // --- Theme Toggle ---
+    const savedTheme = localStorage.getItem("theme") || "dark";
+    document.documentElement.setAttribute("data-theme", savedTheme);
+    themeToggle.textContent = savedTheme === "dark" ? "☀️" : "🌙";
+
+    themeToggle.addEventListener("click", () => {
+        const current = document.documentElement.getAttribute("data-theme");
+        const next = current === "dark" ? "light" : "dark";
+        document.documentElement.setAttribute("data-theme", next);
+        localStorage.setItem("theme", next);
+        themeToggle.textContent = next === "dark" ? "☀️" : "🌙";
+    });
+
+    // --- Back to Top ---
+    window.addEventListener("scroll", () => {
+        if (window.scrollY > 500) {
+            backToTop.classList.add("visible");
+        } else {
+            backToTop.classList.remove("visible");
+        }
+    });
+
+    backToTop.addEventListener("click", () => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    });
 
     // Initialization
     async function init() {
-        showLoading(trendingGrid);
-        showLoading(upcomingGrid);
-        showLoading(latestGrid);
+        showSkeletons(trendingGrid);
+        showSkeletons(latestGrid);
         
         try {
-            await loadAllSections();
+            await loadSections();
         } catch(error) {
             console.error(error);
         }
     }
 
-    async function loadAllSections() {
-        const params = getFilterParams();
+    async function loadSections(searchQuery = null) {
+        let trendingRes, latestRes;
         
-        const [trending, upcoming, latest] = await Promise.all([
-            getTrendingMovies(1, params),
-            getUpcomingMovies(1, params),
-            getLatestMovies(1, params)
-        ]);
+        const params = {
+            watch_region: "IN"
+        };
         
-        renderMovies(trending.results, trendingGrid);
-        renderMovies(upcoming.results, upcomingGrid);
-        renderMovies(latest.results, latestGrid);
+        // Handle filter providers
+        if (currentProvider !== "all" && currentProvider !== "others") {
+            params.with_watch_providers = currentProvider;
+        } else if (currentProvider === "others") {
+            // Exclude netflix(8), prime(119), hotstar(122)
+            params.without_watch_providers = "8|119|122";
+        }
+
+        if (searchQuery) {
+            trendingRes = await searchMovies(searchQuery, params);
+            document.querySelector("#trendingGrid").previousElementSibling.innerHTML = `Search Results: ${searchQuery}`;
+            document.querySelector("#latestGrid").parentElement.style.display = "none";
+        } else {
+            document.querySelector("#trendingGrid").previousElementSibling.innerHTML = `🔥 Trending Now`;
+            document.querySelector("#latestGrid").parentElement.style.display = "block";
+            
+            [trendingRes, latestRes] = await Promise.all([
+                getTrendingMovies(1, params),
+                getLatestMovies(1, params)
+            ]);
+        }
         
-        // Set Hero
-        if(trending.results.length > 0) {
-            setHero(trending.results[0]);
+        renderMovies(trendingRes.results, trendingGrid);
+        if(!searchQuery && latestRes) {
+            renderMovies(latestRes.results, latestGrid);
+        }
+        
+        // Update Hero
+        if(trendingRes.results && trendingRes.results.length > 0) {
+            setHero(trendingRes.results[0]);
         }
     }
-    
-    function getFilterParams() {
-        const params = {};
-        if(currentFilterState.language) params.with_original_language = currentFilterState.language;
-        if(currentFilterState.with_genres) params.with_genres = currentFilterState.with_genres;
-        if(currentFilterState.primary_release_year) params.primary_release_year = currentFilterState.primary_release_year;
-        return params;
+
+    // Filters
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            filterBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentProvider = btn.dataset.provider;
+            
+            searchInput.value = ""; // Reset search
+            showSkeletons(trendingGrid);
+            showSkeletons(latestGrid);
+            loadSections();
+            
+            // Scroll to trending smoothly
+            document.querySelector('.filters-container').scrollIntoView({ behavior: 'smooth' });
+        });
+    });
+
+    // Search
+    searchBtn.addEventListener('click', () => executeSearch());
+    searchInput.addEventListener('keypress', (e) => {
+        if(e.key === 'Enter') executeSearch();
+    });
+
+    function executeSearch() {
+        const query = searchInput.value.trim();
+        if(!query) {
+            init();
+            return;
+        }
+        showSkeletons(trendingGrid);
+        loadSections(query);
     }
 
-    // Rendering
+    // Rendering Helpers
+    function getProviderBadgeCode() {
+        if (currentProvider === "8") return `<span class="ott-badge ott-netflix">NETFLIX</span>`;
+        if (currentProvider === "119") return `<span class="ott-badge ott-prime">PRIME VIDEO</span>`;
+        if (currentProvider === "122") return `<span class="ott-badge ott-hotstar">HOTSTAR</span>`;
+        return `<span class="ott-badge ott-default">STREAMING</span>`;
+    }
+
+    function isToday(dateString) {
+        if(!dateString) return false;
+        const today = new Date().toISOString().split('T')[0];
+        return dateString === today;
+    }
+
     function renderMovies(movies, container) {
         container.innerHTML = "";
         if (!movies || movies.length === 0) {
@@ -95,22 +158,34 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        movies.slice(0, 10).forEach(movie => {
+        // Sort by latest release date if we aren't specifically trending
+        if(container.id === 'latestGrid') {
+            movies.sort((a,b) => new Date(b.release_date || 0) - new Date(a.release_date || 0));
+        }
+
+        movies.slice(0, 12).forEach((movie, index) => {
             if(!movie.poster_path) return;
             
             const card = document.createElement("div");
-            card.classList.add("movie-card");
+            card.classList.add("movie-card", "animate-card");
+            card.style.animationDelay = `${index * 0.05}s`;
             
             const posterUrl = `${IMAGE_BASE_URL}${movie.poster_path}`;
             const releaseYear = movie.release_date ? movie.release_date.substring(0,4) : 'N/A';
             const rating = movie.vote_average ? movie.vote_average.toFixed(1) : 'NR';
             
+            const isNew = isToday(movie.release_date);
+            const badgeCode = getProviderBadgeCode();
+
             card.innerHTML = `
                 <div class="card-img-wrapper">
                     <img src="${posterUrl}" alt="${movie.title}" class="movie-poster" loading="lazy">
-                    <div class="ott-badge">TMDB</div>
+                    <div class="badge-container">
+                        ${isNew ? '<span class="new-badge">NEW TODAY</span>' : ''}
+                        ${badgeCode}
+                    </div>
                     <div class="watch-trailer-btn">
-                        <button onclick="playTrailer(${movie.id}, event)">Watch Trailer</button>
+                        <button onclick="playTrailer(${movie.id}, event)">▶ Trailer</button>
                     </div>
                 </div>
                 <div class="movie-info">
@@ -121,8 +196,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     </div>
                 </div>
             `;
-            
-            card.addEventListener('click', () => openMovieDetails(movie.id));
             container.appendChild(card);
         });
     }
@@ -131,16 +204,21 @@ document.addEventListener("DOMContentLoaded", () => {
         if(!movie.backdrop_path) return;
         heroMovieId = movie.id;
         heroSection.style.backgroundImage = `url(${IMAGE_ORIGINAL_URL}${movie.backdrop_path})`;
+        
         heroTitle.textContent = movie.title || movie.name;
-        heroYear.textContent = movie.release_date ? movie.release_date.substring(0,4) : '';
-        heroRating.textContent = movie.vote_average ? movie.vote_average.toFixed(1) : '';
+        heroMeta.innerHTML = `
+            <span class="rating-badge">★ ${movie.vote_average ? movie.vote_average.toFixed(1) : 'NR'}</span>
+            <span class="hero-year">${movie.release_date ? movie.release_date.substring(0,4) : 'N/A'}</span>
+            ${isToday(movie.release_date) ? '<span class="new-badge">JUST RELEASED</span>' : ''}
+        `;
         heroDesc.textContent = movie.overview;
+        heroTrailerBtn.style.display = "inline-flex";
     }
 
+    // Trailers
     window.playTrailer = async function(movieId, event) {
-        if(event) {
-            event.stopPropagation();
-        }
+        if(event) event.stopPropagation();
+        
         try {
             const details = await getMovieDetails(movieId);
             const videos = details.videos?.results || [];
@@ -154,20 +232,17 @@ document.addEventListener("DOMContentLoaded", () => {
                 
                 trailerContainer.innerHTML = '';
                 trailerContainer.appendChild(iframe);
-                
                 trailerModal.classList.add('active');
             } else {
-                alert("Trailer not available");
+                alert("Trailer not available for this title.");
             }
         } catch(e) {
-            console.error("Error fetching trailer", e);
+            console.error(e);
         }
     };
     
     heroTrailerBtn.addEventListener('click', () => {
-        if(heroMovieId) {
-            playTrailer(heroMovieId);
-        }
+        if(heroMovieId) playTrailer(heroMovieId);
     });
 
     closeTrailer.addEventListener('click', () => {
@@ -175,81 +250,14 @@ document.addEventListener("DOMContentLoaded", () => {
         trailerContainer.innerHTML = '';
     });
 
-    // Filtering
-    filterBtn.addEventListener('click', () => {
-        filterModal.classList.add('active');
-    });
-
-    closeFilter.addEventListener('click', () => {
-        filterModal.classList.remove('active');
-    });
-
-    applyFilterBtn.addEventListener('click', async () => {
-        currentFilterState.language = langFilter.value;
-        currentFilterState.with_genres = genreFilter.value;
-        currentFilterState.primary_release_year = yearFilter.value;
-        
-        filterModal.classList.remove('active');
-        
-        tmTrending.scrollIntoView({ behavior: 'smooth' });
-        await init();
-    });
-
-    // Search
-    searchBtn.addEventListener('click', executeSearch);
-    searchInput.addEventListener('keypress', (e) => {
-        if(e.key === 'Enter') executeSearch();
-    });
-
-    async function executeSearch() {
-        const query = searchInput.value.trim();
-        if(!query) return;
-        
-        tmUpcoming.style.display = 'none';
-        tmLatest.style.display = 'none';
-        
-        document.querySelector("#tmTrending .section-title").textContent = `Search Results for "${query}"`;
-        showLoading(trendingGrid);
-        
-        try {
-            const results = await searchMovies(query, getFilterParams());
-            renderMovies(results.results, trendingGrid);
-            
-            if(results.results.length > 0) {
-                setHero(results.results[0]);
-            }
-        } catch (e) {
-            console.error(e);
+    // Utilities
+    function showSkeletons(container) {
+        container.innerHTML = "";
+        for(let i=0; i<4; i++) {
+            container.innerHTML += `<div class="movie-card skeleton"><div class="skeleton-img"></div></div>`;
         }
     }
 
-    // Tabs
-    tabBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            tabBtns.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            
-            const target = btn.dataset.target;
-            tmTrending.style.display = 'none';
-            tmUpcoming.style.display = 'none';
-            tmLatest.style.display = 'none';
-            
-            document.querySelector("#tmTrending .section-title").textContent = `Trending Now`;
-            
-            if(target === 'all') {
-                tmTrending.style.display = 'block';
-                tmUpcoming.style.display = 'block';
-                tmLatest.style.display = 'block';
-            } else {
-                document.getElementById(target).style.display = 'block';
-            }
-        });
-    });
-
-    // Utilities
-    function showLoading(container) {
-        container.innerHTML = `<p style="color:var(--accent); text-align:center; padding: 20px; grid-column:1/-1;">Loading...</p>`;
-    }
-
+    // Start
     init();
 });
