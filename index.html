@@ -23,10 +23,10 @@
             <p style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">Latest OTT Releases Daily</p>
         </a>
         <div class="nav-controls-top">
-            <div class="search-wrapper">
-                <input type="text" id="searchInput" class="search-input" placeholder="Search movies or series...">
-                <button id="searchBtn" class="search-button">🔍</button>
-            </div>
+            <form id="searchForm" class="search-wrapper" action="javascript:void(0);">
+                <input type="search" id="searchInput" class="search-input" placeholder="Search movies or series...">
+                <button type="submit" id="searchBtn" class="search-button">🔍</button>
+            </form>
             <button id="filterToggleBtn" class="theme-btn" title="Advanced Filters">🎚️</button>
             <button id="themeToggle" class="theme-btn">☀️</button>
         </div>
