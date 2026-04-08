@@ -224,7 +224,12 @@ document.addEventListener("DOMContentLoaded", () => {
     function renderMovies(movies, container) {
         container.innerHTML = "";
         if (!movies || movies.length === 0) {
-            container.innerHTML = "<div style='color: var(--text-secondary); grid-column: 1/-1; text-align: center; font-size: 18px; padding: 50px 0;'>No results found</div>";
+            container.innerHTML = `
+                <div style='color: var(--text-secondary); grid-column: 1/-1; text-align: center; font-size: 18px; padding: 60px 20px;'>
+                    <div style="font-size: 48px; margin-bottom: 15px; filter: grayscale(1); opacity: 0.7;">🤷‍♂️</div>
+                    <h3 style="color: var(--text-primary); font-size: 1.5rem; margin-bottom: 8px;">No results found</h3>
+                    <p style="color: var(--text-secondary); font-size: 0.95rem;">Try adjusting your filters or search terms.</p>
+                </div>`;
             return;
         }
 
@@ -258,6 +263,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 badgeCode = `<span class="ott-badge ott-default" style="background:#f39c12">COMING SOON</span>`;
             }
 
+            // Highlight Matched Search Text
+            let displayTitle = movie.title || movie.name;
+            const currentSearch = searchInput.value.trim();
+            if (currentSearch) {
+                // Escape regex special chars to be safe
+                const safeSearch = currentSearch.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                const regex = new RegExp(`(${safeSearch})`, "gi");
+                displayTitle = displayTitle.replace(regex, `<span style="color: var(--accent); font-weight: 800;">$1</span>`);
+            }
+
             card.innerHTML = `
                 <div class="card-img-wrapper">
                     <img src="${posterUrl}" alt="${movie.title}" class="movie-poster" loading="lazy">
@@ -270,7 +285,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     </div>
                 </div>
                 <div class="movie-info">
-                    <h3 class="movie-title">${movie.title || movie.name}</h3>
+                    <h3 class="movie-title" title="${movie.title || movie.name}">${displayTitle}</h3>
                     <div class="movie-meta-btm">
                         <span>${releaseYear}</span>
                         <span class="rating">★ ${rating}</span>
