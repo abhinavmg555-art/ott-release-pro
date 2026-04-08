@@ -537,3 +537,15 @@ img { max-width: 100%; height: auto; display: block; border-radius: 12px; }
     .hero-section { height: 50vh; margin: 0; border-radius: 0; padding: 30px 5%; }
     .hero-title { font-size: 2.2rem; }
 }
+/* Update exactly to 1.05 Scale and zoom effects */
+.movie-card:hover {
+    transform: scale(1.05); /* Exactly 1.05 Scale */
+    box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.7);
+    border-color: var(--accent);
+    transition: all 0.3s ease;
+}
+
+.filter-btn:hover, .btn-primary:hover {
+    transform: scale(1.05);
+    filter: brightness(1.2);
+}
