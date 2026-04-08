@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,85 +16,77 @@
 </head>
 <body>
 
-    <!-- AdSense Top Banner PlaceHolder -->
-    <div class="ad-space">Top Banner Ad Space</div>
-
     <!-- Header / Navbar -->
     <header class="navbar">
         <a href="index.html" class="logo">
             <h2>OTT<span>Release Pro</span></h2>
         </a>
-        <div class="search-wrapper">
-            <input type="text" id="searchInput" class="search-input" placeholder="Search for movies...">
-            <button id="searchBtn" class="search-button">
-                <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-            </button>
+        <div class="nav-controls-top">
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search movies...">
+                <button id="searchBtn" class="search-button">🔍</button>
+            </div>
+            <button id="themeToggle" class="theme-btn">☀️</button>
         </div>
     </header>
 
-    <!-- Navigation Tabs & Filter -->
-    <div class="nav-controls">
-        <div class="scrollable-tabs-container">
-            <div class="scrollable-tabs">
-                <button class="tab-btn active" data-target="all">All</button>
-                <button class="tab-btn" data-target="tmTrending">Trending</button>
-                <button class="tab-btn" data-target="tmUpcoming">Upcoming</button>
-                <button class="tab-btn" data-target="tmLatest">Latest</button>
-            </div>
+    <!-- Platform Filters -->
+    <div class="filters-container">
+        <div class="platform-filters">
+            <button class="filter-btn active" data-provider="all">All</button>
+            <button class="filter-btn netflix-btn" data-provider="8">Netflix</button>
+            <button class="filter-btn prime-btn" data-provider="119">Prime Video</button>
+            <button class="filter-btn hotstar-btn" data-provider="122">Hotstar</button>
+            <button class="filter-btn others-btn" data-provider="others">Others</button>
         </div>
-        <button id="filterBtn" class="filter-btn">
-            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <line x1="4" y1="21" x2="4" y2="14"></line>
-                <line x1="4" y1="10" x2="4" y2="3"></line>
-                <line x1="12" y1="21" x2="12" y2="12"></line>
-                <line x1="12" y1="8" x2="12" y2="3"></line>
-                <line x1="20" y1="21" x2="20" y2="16"></line>
-                <line x1="20" y1="12" x2="20" y2="3"></line>
-                <line x1="1" y1="14" x2="7" y2="14"></line>
-                <line x1="9" y1="8" x2="15" y2="8"></line>
-                <line x1="17" y1="16" x2="23" y2="16"></line>
-            </svg>
-            Filter
-        </button>
     </div>
 
     <!-- Hero Section -->
     <section class="hero-section" id="heroSection">
         <div class="hero-overlay"></div>
         <div class="hero-content">
-            <h1 class="hero-title" id="heroTitle">Loading...</h1>
-            <div class="hero-meta">
-                <span class="rating-badge" id="heroRating">★ -</span>
-                <span class="hero-year" id="heroYear">-</span>
+            <h1 class="hero-title" id="heroTitle">
+                <div class="skeleton skeleton-text" style="width: 80%; height: 40px; margin-bottom: 20px;"></div>
+                <div class="skeleton skeleton-text" style="width: 50%; height: 40px;"></div>
+            </h1>
+            <div class="hero-meta" id="heroMeta">
+                <div class="skeleton skeleton-text" style="width: 30%; height: 20px;"></div>
             </div>
-            <p class="hero-desc" id="heroDesc">Loading featured movie details...</p>
-            <button id="heroTrailerBtn" class="btn-primary">
+            <p class="hero-desc" id="heroDesc">
+                <div class="skeleton skeleton-text" style="width: 100%; height: 15px;"></div>
+                <div class="skeleton skeleton-text" style="width: 90%; height: 15px; margin-top:10px;"></div>
+            </p>
+            <button id="heroTrailerBtn" class="btn-primary" style="display: none;">
                 ▶ Watch Trailer
             </button>
         </div>
     </section>
 
-    <!-- AdSense Mid Banner PlaceHolder -->
-    <div class="ad-space">Between Content Ad Space</div>
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Trending Now -->
+        <section class="container">
+            <h2 class="section-title">🔥 Trending Now</h2>
+            <div class="movie-grid" id="trendingGrid">
+                <!-- Skeletons -->
+                <div class="movie-card skeleton"><div class="skeleton-img"></div></div>
+                <div class="movie-card skeleton"><div class="skeleton-img"></div></div>
+                <div class="movie-card skeleton"><div class="skeleton-img"></div></div>
+                <div class="movie-card skeleton"><div class="skeleton-img"></div></div>
+            </div>
+        </section>
 
-    <!-- Movie Sections -->
-    <div class="container" id="tmTrending">
-        <h2 class="section-title">Trending Now</h2>
-        <div class="movie-grid" id="trendingGrid"></div>
-    </div>
-
-    <div class="container" id="tmUpcoming">
-        <h2 class="section-title">Upcoming Releases</h2>
-        <div class="movie-grid" id="upcomingGrid"></div>
-    </div>
-    
-    <!-- AdSense Mid Banner PlaceHolder -->
-    <div class="ad-space">AdSense Display Banner</div>
-
-    <div class="container" id="tmLatest">
-        <h2 class="section-title">Latest & Now Playing</h2>
-        <div class="movie-grid" id="latestGrid"></div>
-    </div>
+        <!-- Latest Releases -->
+        <section class="container">
+            <h2 class="section-title">📺 New & Latest Releases</h2>
+            <div class="movie-grid" id="latestGrid">
+                <div class="movie-card skeleton"><div class="skeleton-img"></div></div>
+                <div class="movie-card skeleton"><div class="skeleton-img"></div></div>
+                <div class="movie-card skeleton"><div class="skeleton-img"></div></div>
+                <div class="movie-card skeleton"><div class="skeleton-img"></div></div>
+            </div>
+        </section>
+    </main>
 
     <!-- Footer -->
     <footer class="footer">
@@ -102,11 +94,6 @@
             <div class="footer-col">
                 <h3>OTT Release Pro</h3>
                 <p>Track Latest OTT Movie Releases Instantly. Your ultimate companion to know what to watch and where to catch it.</p>
-                <div class="social-links">
-                    <a href="#">X</a>
-                    <a href="#">IG</a>
-                    <a href="#">FB</a>
-                </div>
             </div>
             <div class="footer-col">
                 <h3>Legal</h3>
@@ -129,53 +116,6 @@
         </div>
     </footer>
 
-    <!-- Filter Modal -->
-    <div class="modal-overlay" id="filterModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Filter Options</h3>
-                <button class="close-modal" id="closeFilter">✕</button>
-            </div>
-            <div class="filter-body">
-                <div class="form-group">
-                    <label>Language</label>
-                    <select id="langFilter" class="form-select">
-                        <option value="">All Languages</option>
-                        <option value="en">English</option>
-                        <option value="hi">Hindi</option>
-                        <option value="te">Telugu</option>
-                        <option value="ta">Tamil</option>
-                        <option value="ml">Malayalam</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Genre</label>
-                    <select id="genreFilter" class="form-select">
-                        <option value="">All Genres</option>
-                        <option value="28">Action</option>
-                        <option value="35">Comedy</option>
-                        <option value="18">Drama</option>
-                        <option value="27">Horror</option>
-                        <option value="878">Sci-Fi</option>
-                        <option value="53">Thriller</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Release Year</label>
-                    <select id="yearFilter" class="form-select">
-                        <option value="">Any Year</option>
-                        <option value="2026">2026</option>
-                        <option value="2025">2025</option>
-                        <option value="2024">2024</option>
-                        <option value="2023">2023</option>
-                        <option value="2022">2022</option>
-                    </select>
-                </div>
-                <button class="btn-block" id="applyFilterBtn">Apply Filters</button>
-            </div>
-        </div>
-    </div>
-
     <!-- YouTube Trailer Modal -->
     <div class="modal-overlay" id="trailerModal">
         <div class="modal-content">
@@ -185,6 +125,9 @@
             </div>
         </div>
     </div>
+
+    <!-- Back to Top Button -->
+    <button id="backToTop" class="back-to-top">↑</button>
 
     <!-- Scripts -->
     <script src="js/api.js"></script>
