@@ -24,6 +24,10 @@ html {
     scroll-behavior: smooth;
 }
 
+.filter-close-btn, .mobile-filter-btn, .mobile-filter-title {
+    display: none;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -598,18 +602,120 @@ a {
     .navbar {
         flex-direction: column;
         gap: 15px;
+        padding: 15px 4%;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: #141414;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        align-items: flex-start;
+    }
+    
+    .logo h2 {
+        font-size: 24px;
     }
     
     .search-container {
         width: 100%;
+        margin-top: 10px;
+        margin-bottom: 5px;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.1);
     }
     
     .search-container:focus-within {
         width: 100%;
+        background: rgba(255, 255, 255, 0.15);
+    }
+
+    .nav-links {
+        display: flex;
+        flex-direction: row;
+        overflow-x: auto;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+        width: 100%;
+        padding-bottom: 5px;
+        scrollbar-width: none; /* Hide scrollbar Firefox */
+    }
+    .nav-links::-webkit-scrollbar {
+        display: none; /* Hide scrollbar Chrome/Safari */
+    }
+    
+    .nav-links a {
+        display: inline-block;
+        margin-left: 0;
+        margin-right: 20px;
+        font-size: 14px;
+    }
+
+    .mobile-filter-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        width: 100%;
+        padding: 12px;
+        background: #2a2a2a;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 15px;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+    
+    .filters-bar {
+        display: none;
+        flex-direction: column;
+        background: #181818;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        z-index: 9999;
+        padding: 25px 20px;
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+        border-top: 1px solid #333;
+        box-shadow: 0 -10px 40px rgba(0,0,0,0.8);
+        animation: slideUp 0.3s ease;
+    }
+    
+    @keyframes slideUp {
+        from { transform: translateY(100%); }
+        to { transform: translateY(0); }
+    }
+    
+    .filters-bar.active {
+        display: flex;
+    }
+    
+    .filter-group {
+        width: 100%;
+        margin-bottom: 15px;
+    }
+    
+    .filter-group select {
+        width: 100%;
+        padding: 12px;
+    }
+    
+    .filter-close-btn {
+        display: block;
+        width: 100%;
+        padding: 14px;
+        background: var(--accent);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: bold;
+        margin-top: 10px;
+        font-size: 16px;
     }
 
     .container {
-        padding: 10px 2%;
+        padding: 10px 4%;
     }
 
     .movie-grid {
@@ -850,8 +956,14 @@ a {
         </div>
     </header>
 
+    <!-- Mobile Filter Toggle Button -->
+    <div style="padding: 0 4%; margin-top: 20px;">
+        <button id="mobileFilterBtn" class="mobile-filter-btn"><i class="fas fa-filter"></i> Search Filters</button>
+    </div>
+
     <!-- Filters Bar -->
-    <section class="filters-bar">
+    <section class="filters-bar" id="filtersBar">
+        <h3 style="margin-bottom: 15px; display: none;" class="mobile-filter-title">Filters</h3>
         <div class="filter-group">
             <label for="langFilter">Language</label>
             <select id="langFilter">
@@ -888,6 +1000,7 @@ a {
                 <!-- Populated dynamically via JS -->
             </select>
         </div>
+        <button id="filterCloseBtn" class="filter-close-btn">Apply Filters</button>
     </section>
 
     <!-- Default Hero Section (Hidden during search/favorites) -->
@@ -1731,6 +1844,23 @@ async function performSearch(isAppend = false) {
 
 // Event Listeners
 searchBtn.addEventListener('click', () => performSearch(false));
+
+const mobileFilterBtn = document.getElementById('mobileFilterBtn');
+const filtersBar = document.getElementById('filtersBar');
+const filterCloseBtn = document.getElementById('filterCloseBtn');
+
+if(mobileFilterBtn) {
+    mobileFilterBtn.addEventListener('click', () => {
+        filtersBar.classList.add('active');
+        document.querySelector('.mobile-filter-title').style.display = 'block';
+    });
+}
+
+if(filterCloseBtn) {
+    filterCloseBtn.addEventListener('click', () => {
+        filtersBar.classList.remove('active');
+    });
+}
 
 let searchTimeout;
 searchInput.addEventListener('input', (e) => {
