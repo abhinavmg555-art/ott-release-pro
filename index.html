@@ -171,6 +171,23 @@
         </div>
     </div>
 
+    <!-- Mobile Search Modal -->
+    <div class="search-modal" id="searchModal">
+        <div class="search-modal-header">
+            <h2 style="font-size: 1.4rem; font-weight: 700;">Search Content</h2>
+            <button class="close-search" id="closeSearchModal">✕</button>
+        </div>
+        <input type="search" id="mobileSearchInput" class="search-input" placeholder="Search movies or series..." style="font-size: 16px; padding: 15px; border-radius: 12px; margin-bottom: 20px;">
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav" id="bottomNav">
+        <a href="#" class="nav-item active"><span class="icon">🏠</span><span>Home</span></a>
+        <a href="#trendingGrid" class="nav-item"><span class="icon">🔥</span><span>Trending</span></a>
+        <a href="javascript:void(0);" class="nav-item" id="mobileSearchTrigger"><span class="icon">🔍</span><span>Search</span></a>
+        <a href="#latestGrid" class="nav-item"><span class="icon">🚀</span><span>Soon</span></a>
+    </nav>
+
     <!-- Back to Top Button -->
     <button id="backToTop" class="back-to-top">↑</button>
 
