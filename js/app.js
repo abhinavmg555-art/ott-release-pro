@@ -49,6 +49,61 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     }
+
+    // Mobile Search Modal Events
+    const mobileSearchTrigger = document.getElementById("mobileSearchTrigger");
+    const searchModal = document.getElementById("searchModal");
+    const closeSearchModal = document.getElementById("closeSearchModal");
+    const mobileSearchInput = document.getElementById("mobileSearchInput");
+
+    if (mobileSearchTrigger && searchModal) {
+        mobileSearchTrigger.addEventListener("click", () => {
+            searchModal.classList.add("active");
+            if(mobileSearchInput) mobileSearchInput.focus();
+        });
+    }
+    if (closeSearchModal) {
+        closeSearchModal.addEventListener("click", () => {
+            searchModal.classList.remove("active");
+        });
+    }
+
+    // Bottom Nav Active State logic
+    const navItems = document.querySelectorAll(".bottom-nav .nav-item");
+    navItems.forEach(item => {
+        item.addEventListener("click", function() {
+            if(!this.id || this.id !== "mobileSearchTrigger") {
+                navItems.forEach(n => n.classList.remove("active"));
+                this.classList.add("active");
+            }
+        });
+    });
+
+    // Watchlist State Array
+    let watchlist = JSON.parse(localStorage.getItem('ott_watchlist')) || [];
+
+    // Global toggle function
+    window.toggleWatchlist = function(movieId, event) {
+        if(event) event.stopPropagation();
+        movieId = parseInt(movieId);
+        const index = watchlist.indexOf(movieId);
+        if(index > -1) {
+            watchlist.splice(index, 1);
+        } else {
+            watchlist.push(movieId);
+        }
+        localStorage.setItem('ott_watchlist', JSON.stringify(watchlist));
+        
+        // Update DOM button visually
+        const btn = event.currentTarget;
+        if(btn) {
+            if (watchlist.includes(movieId)) {
+                btn.innerHTML = '❤️';
+            } else {
+                btn.innerHTML = '🤍';
+            }
+        }
+    };
     
     // State
     let currentProvider = "all"; // all, 8, 119, 122, others
@@ -197,6 +252,22 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 250); // 250ms debounce for lightning-fast real-time filtering
     });
 
+    if(mobileSearchInput) {
+        mobileSearchInput.addEventListener('input', (e) => {
+            searchInput.value = e.target.value;
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                executeSearch();
+            }, 400); 
+        });
+        mobileSearchInput.addEventListener('keydown', (e) => {
+             if(e.key === 'Enter') {
+                 searchModal.classList.remove("active");
+                 executeSearch();
+             }
+        });
+    }
+
     function executeSearch() {
         const query = searchInput.value.trim();
         if(!query) {
@@ -273,15 +344,20 @@ document.addEventListener("DOMContentLoaded", () => {
                 displayTitle = displayTitle.replace(regex, `<span style="color: var(--accent); font-weight: 800;">$1</span>`);
             }
 
+            const isWatchlisted = watchlist.includes(movie.id);
+
             card.innerHTML = `
                 <div class="card-img-wrapper">
                     <img src="${posterUrl}" alt="${movie.title}" class="movie-poster" loading="lazy">
+                    <button class="watchlist-btn" onclick="toggleWatchlist(${movie.id}, event)" style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.6); border: none; font-size: 16px; border-radius: 50%; width: 32px; height: 32px; cursor: pointer; z-index: 5; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'">
+                        ${isWatchlisted ? '❤️' : '🤍'}
+                    </button>
                     <div class="badge-container">
                         ${isNew ? '<span class="new-badge">NEW TODAY</span>' : ''}
                         ${badgeCode}
                     </div>
                     <div class="watch-trailer-btn">
-                        <button onclick="playTrailer(${movie.id}, event)">▶ Trailer</button>
+                        <button onclick="playTrailer(${movie.id}, event)">ℹ️ View Details</button>
                     </div>
                 </div>
                 <div class="movie-info">
@@ -309,6 +385,25 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
         heroDesc.textContent = movie.overview;
         heroTrailerBtn.style.display = "inline-flex";
+
+        let heroWatchlistBtn = document.getElementById("heroWatchlistBtn");
+        if(!heroWatchlistBtn) {
+            heroWatchlistBtn = document.createElement("button");
+            heroWatchlistBtn.id = "heroWatchlistBtn";
+            heroWatchlistBtn.style.cssText = "display: inline-flex; align-items: center; background: rgba(255,255,255,0.2); color: white; padding: 12px 24px; border-radius: 8px; font-weight: 600; border: none; cursor: pointer; margin-left: 10px; backdrop-filter: blur(5px); transition: transform 0.2s ease, background 0.2s;";
+            
+            heroWatchlistBtn.onmouseover = () => { heroWatchlistBtn.style.background = "rgba(255,255,255,0.3)"; heroWatchlistBtn.style.transform = "scale(1.05)"; };
+            heroWatchlistBtn.onmouseout = () => { heroWatchlistBtn.style.background = "rgba(255,255,255,0.2)"; heroWatchlistBtn.style.transform = "scale(1)"; };
+
+            heroTrailerBtn.parentNode.insertBefore(heroWatchlistBtn, heroTrailerBtn.nextSibling);
+        }
+        const isWatchlisted = watchlist.includes(movie.id);
+        heroWatchlistBtn.innerHTML = isWatchlisted ? '❤️ Watchlisted' : '🔔 Notify Me / Watchlist';
+        heroWatchlistBtn.onclick = (e) => {
+            window.toggleWatchlist(movie.id, e);
+            const nowWatchlisted = watchlist.includes(movie.id);
+            heroWatchlistBtn.innerHTML = nowWatchlisted ? '❤️ Watchlisted' : '🔔 Notify Me';
+        };
     }
 
     // Trailers & Details Modal
