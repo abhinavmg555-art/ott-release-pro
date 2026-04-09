@@ -513,6 +513,10 @@ document.addEventListener("DOMContentLoaded", () => {
             const trailer = details.videos?.results?.find(v => v.type === 'Trailer' && v.site === 'YouTube') || details.videos?.results?.find(v => v.site === 'YouTube');
             if (trailer) trailerHtml = `<a href="https://www.youtube.com/watch?v=${trailer.key}" target="_blank" class="trailer-btn" title="Watch Trailer on YouTube">▶ Watch Trailer</a>`;
 
+            const shareUrl = encodeURIComponent(watchLink);
+            const shareText = encodeURIComponent(`Awesome movie to watch: ${details.title}. Check it out!`);
+            const shareHtml = `<a href="https://api.whatsapp.com/send?text=${shareText}%20${shareUrl}" target="_blank" class="share-btn" style="display: inline-flex; align-items: center; gap: 8px; background: #25D366; color: white; padding: 8px 15px; border-radius: 4px; font-weight: bold; margin-left: 10px; margin-bottom: 15px; text-decoration: none; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'"><span style="font-size: 16px;">📱</span> Share</a>`;
+
             trailerContainer.innerHTML = `
                 <img src="${posterUrl}" alt="${details.title}" class="modal-poster">
                 <div class="modal-info">
@@ -520,7 +524,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     <p style="color: var(--text-secondary); font-size: 15px; margin-bottom: 15px;">
                         ${releaseYear}${certString} • ${genreStr} • ${runtimeStr}
                     </p>
-                    ${trailerHtml}
+                    ${trailerHtml} ${shareHtml}
                     <div class="modal-meta">
                         ${digitalDateStr ? `<span style="color: var(--accent);" title="Digital OTT Release Date">OTT: ${digitalDateStr}</span>` : ''}
                         <span title="Box Office Earnings">💰 ${revenue}</span>
