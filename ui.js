@@ -1,3 +1,5 @@
+
+
 /**
  * Render Hero Banner
  */
@@ -80,55 +82,24 @@ function renderMovies(gridElement, movies, favorites = [], onMovieClick, onFavor
         const imgUrl = `${IMAGE_BASE_URL}${movie.poster_path}`;
         const releaseYear = movie.release_date ? movie.release_date.split('-')[0] : 'N/A';
         
-        // Dummy Platform Logic for Demo (Based on movie ID so it's consistent)
-        const platforms = ['netflix', 'prime', 'hotstar', 'other'];
-        const platformIndex = movie.id % platforms.length;
-        const platform = platforms[platformIndex];
-        
-        let platformBadgeText = 'Other';
-        let platformClass = 'platform-other';
-        let watchButtonHtml = '';
-        
-        if (platform === 'netflix') {
-            platformBadgeText = 'Netflix';
-            platformClass = 'platform-netflix';
-            watchButtonHtml = `<a href="https://www.netflix.com" target="_blank" class="watch-btn watch-netflix" onclick="event.stopPropagation()"><i class="fa-solid fa-play"></i> Watch on Netflix</a>`;
-        } else if (platform === 'prime') {
-            platformBadgeText = 'Prime Video';
-            platformClass = 'platform-prime';
-            // Replace with your real Amazon affiliate link
-            watchButtonHtml = `<a href="https://www.amazon.in/dp/XXXXXXXX?tag=youraffid" target="_blank" class="watch-btn watch-prime" onclick="event.stopPropagation()"><i class="fa-solid fa-play"></i> Watch on Prime</a>`;
-        } else if (platform === 'hotstar') {
-            platformBadgeText = 'Hotstar';
-            platformClass = 'platform-hotstar';
-            watchButtonHtml = `<a href="https://www.hotstar.com" target="_blank" class="watch-btn watch-hotstar" onclick="event.stopPropagation()"><i class="fa-solid fa-play"></i> Watch on Hotstar</a>`;
-        }
-
-        // Only add to dataset if not already in the array, for filtering
-        card.dataset.platform = platform;
-        
         card.innerHTML = `
             <img src="${imgUrl}" alt="${movie.title}" class="movie-poster" loading="lazy">
             <button class="fav-btn ${isFav ? 'active' : ''}" data-id="${movie.id}">
                 <i class="fa-solid fa-heart"></i>
             </button>
             <div class="movie-info">
-                <span class="platform-badge ${platformClass}">${platformBadgeText}</span>
                 <h4 class="movie-title">${movie.title}</h4>
                 <div class="movie-meta">
                     <span>${releaseYear}</span>
                     <span><i class="fa-solid fa-star" style="color: gold;"></i> ${movie.vote_average ? movie.vote_average.toFixed(1) : 'NR'}</span>
                 </div>
                 <p class="movie-overview">${movie.overview || 'No overview available.'}</p>
-                <div class="watch-actions">
-                    ${watchButtonHtml}
-                </div>
             </div>
         `;
 
         // Card Click Event for Details
         card.addEventListener('click', (e) => {
-            if (e.target.closest('.fav-btn') || e.target.closest('.watch-btn')) return; // Ignore if clicking favorite or watch button
+            if (e.target.closest('.fav-btn')) return; // Ignore if clicking favorite button
             onMovieClick(movie.id);
         });
 
