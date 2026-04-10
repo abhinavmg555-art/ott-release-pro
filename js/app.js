@@ -94,6 +94,15 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         localStorage.setItem('ott_watchlist', JSON.stringify(watchlist));
         
+        // Analytics Event Tracking
+        if (typeof gtag === 'function') {
+            gtag('event', 'add_to_watchlist', {
+                'event_category': 'Engagement',
+                'event_label': 'Movie ID: ' + movieId,
+                'value': 1
+            });
+        }
+        
         // Update DOM button visually
         const btn = event.currentTarget;
         if(btn) {
@@ -515,7 +524,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const shareUrl = encodeURIComponent(watchLink);
             const shareText = encodeURIComponent(`Awesome movie to watch: ${details.title}. Check it out!`);
-            const shareHtml = `<a href="https://api.whatsapp.com/send?text=${shareText}%20${shareUrl}" target="_blank" class="share-btn" style="display: inline-flex; align-items: center; gap: 8px; background: #25D366; color: white; padding: 8px 15px; border-radius: 4px; font-weight: bold; margin-left: 10px; margin-bottom: 15px; text-decoration: none; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'"><span style="font-size: 16px;">📱</span> Share</a>`;
+            const shareHtml = `<a href="https://api.whatsapp.com/send?text=${shareText}%20${shareUrl}" target="_blank" onclick="if(typeof window.gtag === 'function') window.gtag('event', 'share_whatsapp', {'event_category':'Social', 'event_label':'${details.title.replace(/'/g, "\\'")}'});" class="share-btn" style="display: inline-flex; align-items: center; gap: 8px; background: #25D366; color: white; padding: 8px 15px; border-radius: 4px; font-weight: bold; margin-left: 10px; margin-bottom: 15px; text-decoration: none; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'"><span style="font-size: 16px;">📱</span> Share</a>`;
 
             trailerContainer.innerHTML = `
                 <img src="${posterUrl}" alt="${details.title}" class="modal-poster">
