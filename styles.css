@@ -168,6 +168,8 @@ a {
     padding: 10px 4%;
     display: flex;
     justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 10px;
     margin-bottom: 20px;
 }
 
@@ -501,6 +503,11 @@ a {
     
     .search-container:focus-within {
         width: 100%;
+    }
+    
+    .filters-bar {
+        justify-content: center;
+        padding-top: 15px;
     }
 }
 
