@@ -1,3 +1,111 @@
+"use client";
+
+import { useState, useEffect } from 'react';
+import { MovieCard } from '@/components/MovieCard';
+import { FilterBar } from '@/components/FilterBar';
+import { Movie } from '@/lib/types';
+
+export default function Home() {
+  const [movies, setMovies] = useState<Movie[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  
+  const [language, setLanguage] = useState("All");
+  const [platform, setPlatform] = useState("All");
+  const [genre, setGenre] = useState("All");
+  const [year, setYear] = useState("All");
+  const [page, setPage] = useState(1);
+
+  // Ask the backend server securely!
+  async function fetchBackend(p: number) {
+    const res = await fetch('/api/tmdb', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ language, platform, genre, year, page: p })
+    });
+    return await res.json();
+  }
+
+  // When you change a dropdown, start fresh!
+  useEffect(() => {
+    setPage(1);
+    setLoading(true);
+    fetchBackend(1).then(data => {
+      setMovies(data);
+      setLoading(false);
+    });
+  }, [language, platform, genre, year]);
+
+  // When you click Load More, append to the grid!
+  const handleLoadMore = async () => {
+    setLoadingMore(true);
+    const nextPage = page + 1;
+    const newMovies = await fetchBackend(nextPage);
+    setMovies(prev => [...prev, ...newMovies]);
+    setPage(nextPage);
+    setLoadingMore(false);
+  };
+
+  const trendingMovies = movies.filter(m => m.trending).slice(0, 4);
+  const mostSearchedMovies = [...movies].sort((a, b) => b.searched - a.searched).slice(0, 4);
+
+  return (
+    <div className="container" style={{ paddingTop: '2rem', paddingBottom: '4rem' }}>
+      <FilterBar 
+        language={language} setLanguage={setLanguage}
+        platform={platform} setPlatform={setPlatform}
+        genre={genre} setGenre={setGenre}
+        year={year} setYear={setYear}
+      />
+
+      {loading ? (
+        <div style={{ textAlign: 'center', padding: '4rem 0', color: 'var(--text-secondary)' }}>
+          <h3 className="title">Bypassing Network & Fetching Live... 🍿</h3>
+        </div>
+      ) : (
+        <>
+          <section style={{ marginBottom: '3rem' }}>
+            <h2 className="title" style={{ fontSize: '1.5rem', marginBottom: '1.5rem' }}>Trending Right Now</h2>
+            <div className="movie-grid">
+              {trendingMovies.map((movie, idx) => (
+                <MovieCard key={`trending-${movie.id}-${idx}`} movie={movie} />
+              ))}
+            </div>
+          </section>
+          
+          <section>
+            <h2 className="title" style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>Full OTT Release List</h2>
+            <p className="subtitle" style={{ marginBottom: '2rem' }}>Showing Live TMDB results matching your filters.</p>
+            
+            {movies.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '4rem 0', color: 'var(--text-secondary)' }}>
+                <h3>No movies match your filters. Try another combination!</h3>
+              </div>
+            ) : (
+              <>
+                <div className="movie-grid">
+                  {movies.map((movie, idx) => (
+                    <MovieCard key={`${movie.id}-${idx}`} movie={movie} />
+                  ))}
+                </div>
+                <div style={{ textAlign: 'center', marginTop: '3rem' }}>
+                  <button 
+                    className="btn btn-primary" 
+                    onClick={handleLoadMore} 
+                    disabled={loadingMore}
+                    style={{ padding: '0.75rem 2.5rem', fontSize: '1rem', cursor: 'pointer' }}
+                  >
+                    {loadingMore ? "Loading Next Page..." : "Load More Movies"}
+                  </button>
+                </div>
+              </>
+            )}
+          </section>
+        </>
+      )}
+    </div>
+  );
+}
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { Calendar, MonitorPlay, Bell, Play } from 'lucide-react';
